@@ -6,6 +6,7 @@
                 Return to home
             </router-link>
         </p>
+
         <form class="login">
             <h2 class="title">Login to SCCBC</h2>
             <div class="inputs">
@@ -36,6 +37,7 @@
                 Don't have an account?
                 <router-link :to="{ name: 'Register' }" class="router-link">Sign Up</router-link>
             </p>
+
             <div class="angle"></div>
         </form>
         <div class="background">
@@ -88,6 +90,10 @@
 </script>
 
 <style lang="scss">
+    .migration {
+        width: 300px;
+    }
+
     .form-wrap {
         overflow: hidden;
         display: flex;
@@ -205,7 +211,8 @@
 
             .rule {
                 width: 100%;
-                max-width: 400px;
+                max-width: 300px;
+                margin-top: 30px;
             }
         }
 

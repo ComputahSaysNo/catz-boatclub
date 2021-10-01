@@ -7,7 +7,7 @@
                     <h1 class="header">SCCBC</h1>
                 </router-link>
                 <div class="nav-links">
-                    <ul v-show="!mobile">
+                    <ul v-show="!$store.state.mobile">
                         <router-link class="link" :to="{name: 'News'}">News</router-link>
                         <b-dropdown :triggers="['hover']" aria-role="list" class="link mr-4">
                             <template #trigger>
@@ -21,45 +21,54 @@
                             <router-link to="/info/history"><b-dropdown-item aria-role="listitem">Club History</b-dropdown-item></router-link>
 
                         </b-dropdown>
-                        <router-link class="link" to="#">Crews</router-link>
-                        <router-link class="link" to="#">Outings</router-link>
-                        <router-link class="link" to="#">Ergs</router-link>
-                        <router-link class="link" to="#">Gallery</router-link>
-                        <b-button :to="{name: 'Login' }" class="mr-3" tag="router-link" type="is-danger is-light"
+                        <router-link class="link" :to="{name: 'Crews'}">Crews</router-link>
+                        <router-link class="link" :to="{name: 'Outings' }">Outings</router-link>
+                        <router-link class="link" :to="{name: 'Ergs' }">Ergs</router-link>
+                        <router-link class="link" :to="{name: 'Gallery'}">Gallery</router-link>
+                        <b-button :to="{name: 'Login' }" class="mr-3" tag="router-link" type="is-warning"
+                                  v-show="!$store.state.authUser">
+                            Login
+                        </b-button>
+                    </ul>
+                    <ul v-if="$store.state.mobile">
+                        <b-button :to="{name: 'Login' }" class="mr-3" tag="router-link" type="is-warning"
                                   v-show="!$store.state.authUser">
                             Login
                         </b-button>
                     </ul>
                     <div class="profile" v-if="$store.state.authUser">
-                        <span class="initials" @click="profileMenuOpen=!profileMenuOpen"><h1>{{$store.state.profileInitials}}</h1></span>
+                        <span class="initials" @click="profileMenuOpen=!profileMenuOpen"><h1>{{$store.getters.initials}}</h1></span>
                         <div class="profile-menu" v-show="profileMenuOpen">
                             <div class="close-profile" @click="profileMenuOpen=false">
                                 <b-icon icon="close" class="close-profile"></b-icon>
                             </div>
-                            <div class="initials ml-auto mr-auto mt-4"
+                            <router-link :to="{name: 'Profile', params: {uid: $store.state.authUser.uid}}" class="initials ml-auto mr-auto mt-4"
                                  :style="'font-size: 23px; width: 70px; height: 70px;'"><h1>
-                                {{$store.state.profileInitials}}</h1></div>
-                            <h1 class="mt-4 mb-1">{{$store.getters.userFullName}}</h1>
-                            <h4 class="is-italic mb-2">{{$store.getters.userEmail}}</h4>
+                                {{$store.getters.initials}}</h1></router-link>
+                            <h1 class="mt-4 mb-1">{{$store.getters.name}}</h1>
+                            <h4 class="is-italic mb-2">{{$store.getters.email}}</h4>
                             <b-tag rounded type="is-danger" class="mr-1" v-show="$store.state.isAdmin">Admin</b-tag>
-                            <b-tag rounded type="is-info" class="ml-1">Committee</b-tag>
                             <hr :style="'border-top: 1px solid black'">
-                            <b-button class="menu-btn" icon-right="account">My Profile</b-button>
-                            <b-button class=menu-btn icon-right="wrench" v-show="$store.state.isAdmin">Admin Panel</b-button>
-                            <b-button class=menu-btn icon-right="exit-to-app" @click="signOut">Log Out</b-button>
+                            <router-link :to="{name: 'Profile', params: {uid: $store.state.authUser.uid}}"><b-button class="menu-btn mb-2" icon-right="account" type="is-primary">My Profile</b-button></router-link>
+                            <router-link :to="{name: 'Admin'}">
+                                <b-button class="menu-btn mb-2" icon-right="wrench" v-show="$store.state.isAdmin">Admin Panel</b-button>
+                            </router-link>
+
+                            <b-button type="is-danger" class=menu-btn icon-right="exit-to-app" @click="signOut">Log Out</b-button>
                         </div>
                     </div>
                     <div>
-                        <MenuIcon @click="toggleMobileSidebar" class="icon mobile-menu-toggle" v-show="mobile"/>
+                        <MenuIcon @click="toggleMobileSidebar" class="icon mobile-menu-toggle" v-show="$store.state.mobile"/>
                     </div>
                 </div>
             </nav>
         </header>
-        <b-sidebar fullheight v-model="mobileNavOpen">
+        <b-sidebar fullheight v-model="mobileNavOpen" v-if="$store.state.mobile">
             <b-menu>
                 <h1>SCCBC</h1>
                 <b-menu-list>
-                    <b-menu-item icon="newspaper-variant-multiple-outline" label="News"></b-menu-item>
+                    <b-menu-item icon="home" label="Home" tag="router-link" to="/"></b-menu-item>
+                    <b-menu-item icon="newspaper-variant-multiple-outline" label="News" tag="router-link" to="/news"></b-menu-item>
                     <b-menu-item icon="information-outline">
                         <template #label="props">
                             Info
@@ -67,16 +76,16 @@
                             </b-icon>
                         </template>
 
-                        <b-menu-item icon="information-outline" label="Potential Applicants"></b-menu-item>
-                        <b-menu-item icon="information-outline" label="Club History"></b-menu-item>
-                        <b-menu-item icon="information-outline" label="Alumni"></b-menu-item>
-                        <b-menu-item icon="information-outline" label="Committee"></b-menu-item>
-                        <b-menu-item icon="information-outline" label="COVID-19 Policy"></b-menu-item>
+                        <b-menu-item icon="information-outline" label="Potential Applicants" tag="router-link" to="/info/applicants"></b-menu-item>
+                        <b-menu-item icon="information-outline" label="Club History" tag="router-link" to="/info/history"></b-menu-item>
+                        <b-menu-item icon="information-outline" label="Alumni" tag="router-link" to="/info/alumni"></b-menu-item>
+                        <b-menu-item icon="information-outline" label="Committee" tag="router-link" to="/info/committee"></b-menu-item>
+                        <b-menu-item icon="information-outline" label="COVID-19 Policy " tag="router-link" to="/info/covid"></b-menu-item>
                     </b-menu-item>
-                    <b-menu-item icon="account-group" label="Crews"></b-menu-item>
-                    <b-menu-item icon="waves" label="Outings"></b-menu-item>
-                    <b-menu-item icon="image-filter-hdr" label="Ergs"></b-menu-item>
-                    <b-menu-item icon="image" label="Gallery"></b-menu-item>
+                    <b-menu-item icon="account-group" label="Crews" tag="router-link" to="/crews"></b-menu-item>
+                    <b-menu-item icon="waves" label="Outings" tag="router-link" to="/outings"></b-menu-item>
+                    <b-menu-item icon="image-filter-hdr" label="Ergs" tag="router-link" to="/ergs"></b-menu-item>
+                    <b-menu-item icon="image" label="Gallery" tag="router-link" to="/gallery"></b-menu-item>
                 </b-menu-list>
             </b-menu>
         </b-sidebar>
@@ -97,23 +106,12 @@
         },
         data() {
             return {
-                mobile: null,
                 mobileNavOpen: null,
                 profileMenuOpen: false,
                 windowWidth: null,
             }
         },
         methods: {
-            checkScreenSize() {
-                this.windowWidth = window.innerWidth;
-                if (this.windowWidth < 1050) {
-                    this.mobile = true;
-                    return;
-                }
-                this.mobile = false;
-                this.mobileNavOpen = false;
-            },
-
             toggleMobileSidebar() {
                 this.mobileNavOpen = !this.mobileNavOpen
             },
@@ -122,9 +120,11 @@
                 window.location.reload();
             }
         },
-        created() {
-            window.addEventListener("resize", this.checkScreenSize)
-            this.checkScreenSize()
+        watch: {
+            $route() {
+                this.profileMenuOpen = false
+                this.mobileNavOpen = false
+            }
         }
     }
 </script>
@@ -232,18 +232,17 @@
                     top: 60px;
                     right: 0;
                     width: 250px;
-                    background-color: #e1e1e1;
+                    background-color: #f1f1f1;
                     color: black;
                     text-align: center;
                     align-items: center;
                     align-content: center;
                     justify-content: center;
                     padding: 20px;
-                    border-radius: 0 0 10px 10px;
-                    border: 4px solid #999999;
-                    border-top: 0;
+                    border: 1px solid black;
+
                     z-index: 99;
-                    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+                    box-shadow: 0 10px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 
                     .close-profile {
                         position: absolute;
@@ -255,6 +254,7 @@
 
                 .menu-btn {
                     width: 100%;
+
                 }
             }
 

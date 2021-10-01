@@ -10,6 +10,13 @@ import ViewPost from "../views/ViewPost";
 import CreatePost from "../views/CreatePost";
 import Info from "../views/Info";
 import Profile from "../views/Profile";
+import Crews from "../views/Crews"
+import ViewCrew from "../views/ViewCrew";
+import EditPost from "../views/EditPost";
+import Gallery from "../views/Gallery";
+import Outings from "../views/Outings";
+import Ergs from "../views/Ergs";
+import Admin from "../views/Admin";
 
 Vue.use(VueRouter)
 
@@ -48,6 +55,22 @@ const routes = [
     }
   },
   {
+    path: '/crews',
+    name: 'Crews',
+    component: Crews,
+    meta: {
+      title: "Crews"
+    },
+  },
+  {
+    path: '/crews/:crewId',
+    name: 'ViewCrew',
+    component: ViewCrew,
+    meta: {
+      title: "Crew"
+    }
+  },
+  {
     path: '/info',
     redirect: '/info/main'
   },
@@ -67,6 +90,14 @@ const routes = [
     component: CreatePost,
     meta: {
       title: "Create Post"
+    }
+  },
+  {
+    path: '/edit-post/:postId',
+    name: 'EditPost',
+    component: EditPost,
+    meta: {
+      title: "Edit Post"
     }
   },
   {
@@ -100,7 +131,38 @@ const routes = [
     meta: {
       title: `User Profile`
     },
-
+  },
+  {
+    path: '/gallery',
+    name: 'Gallery',
+    component: Gallery,
+    meta: {
+      title: "Gallery"
+    }
+  },
+  {
+    path: '/outings',
+    name: 'Outings',
+    component: Outings,
+    meta: {
+      title: "Outings"
+    }
+  },
+  {
+    path: '/ergs',
+    name: 'Ergs',
+    component: Ergs,
+    meta: {
+      title: "Ergs"
+    }
+  },
+  {
+    path: '/admin',
+    name: 'Admin',
+    component: Admin,
+    meta: {
+      title: "Admin Panel"
+    }
   }
 ]
 

@@ -14,6 +14,8 @@ Vue.use(Vue2Editor);
 Vue.use(Buefy)
 Vue.use(VueParticles)
 
+console.log('Hi')
+
 Vue.config.productionTip = false
 
 let app

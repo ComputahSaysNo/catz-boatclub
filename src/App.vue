@@ -1,11 +1,9 @@
 <template>
   <div id="app" v-show="$store.state.pageLoaded">
-    <Navigation v-show="showNav"></Navigation>
-    <body>
+    <Navigation v-if="showNav"></Navigation>
+    <div class="main">
       <router-view/>
-    </body>
-
-    <div class="spacer"></div>
+    </div>
     <Footer v-show="showNav"></Footer>
   </div>
 </template>
@@ -22,8 +20,18 @@
     -moz-osx-font-smoothing: grayscale;
   }
 
-  .spacer {
-    flex: 1;
+  .rule {
+    border-top: 1px solid black;
+    width: 100%;
+    margin: 10px auto 20px auto
+  }
+
+  .main {
+    flex-grow: 1;
+  }
+
+  .main, .footer {
+    flex-shrink: 0;
   }
 
   h1, h2, h3, .header {
@@ -46,11 +54,16 @@
     width: auto;
   }
 
-  #app, body{
+  #app {
     display: flex;
     flex-direction: column;
-    min-height: 63vh;
     background-color: #f1f1f1;
+    min-height: 100%;
+    align-items: stretch;
+  }
+
+  html, body {
+    height: 100%;
   }
 
   .content-card-wrap {
@@ -61,16 +74,16 @@
       display: grid;
       gap: 32px;
       grid-template-columns: 1fr;
-      @media (min-width: 480px) {
+      @media (min-width: 600px) {
         grid-template-columns: repeat(2, 1fr);
       }
-      @media (min-width: 720px) {
+      @media (min-width: 900px) {
         grid-template-columns: repeat(3, 1fr);
       }
-      @media (min-width: 960px) {
+      @media (min-width: 1200px) {
         grid-template-columns: repeat(4, 1fr);
       }
-      @media (min-width: 1200px) {
+      @media (min-width: 1500px) {
         grid-template-columns: repeat(5, 1fr);
       }
     }
@@ -88,7 +101,15 @@
     methods: {
       checkNav() {
         this.showNav = !(this.$route.name === "Login" || this.$route.name === "Register" || this.$route.name === "Forgot");
-      }
+      },
+      checkScreenSize() {
+        this.windowWidth = window.innerWidth;
+        if (this.windowWidth < 1050) {
+          this.$store.state.mobile = true;
+          return;
+        }
+        this.$store.state.mobile = false;
+      },
     },
     data () {
       return {
@@ -97,15 +118,19 @@
     },
     created() {
       this.checkNav()
+      window.addEventListener("resize", this.checkScreenSize)
+      this.checkScreenSize()
       firebase.auth().onAuthStateChanged((user) => {
         this.$store.commit('updateAuthUser', user)
         if (user) {
           this.$store.dispatch('getUserProfile', user)
         }
       })
-      this.$store.dispatch("getCards")
+      this.$store.dispatch("getNewsCards")
+      this.$store.dispatch("getCrewCards")
     },
     mounted() {
+      this.$store.state.counter = 4
     },
     watch: {
       $route() {

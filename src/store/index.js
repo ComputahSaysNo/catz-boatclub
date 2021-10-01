@@ -11,14 +11,18 @@ export default new Vuex.Store({
     authUser: null,
     profile: null,
     isAdmin: false,
-    profileInitials: '',
     editor: {
       postTitle: '',
       postHTML: '',
+      taggedCrews: []
     },
-    loadedCards: [],
+    loadedNewsCards: [],
+    loadedCrewCards: [],
     editMode: false,
-    pageLoaded: true
+    pageLoaded: true,
+    postsLoaded: false,
+    mobile: false,
+    counter: 0
   },
   mutations: {
     updateAuthUser(state, payload) {
@@ -30,10 +34,6 @@ export default new Vuex.Store({
     updateAdmin(state, payload) {
       state.isAdmin = payload
     },
-    setProfileInitials(state) {
-      state.profileInitials =
-          state.profile.forename.match(/(\b\S)?/g).join("") + state.profile.surname.match(/(\b\S)?/g).join("");
-    },
     updatePostTitle(state, payload) {
       state.editor.postTitle = payload
     },
@@ -42,45 +42,59 @@ export default new Vuex.Store({
     },
     updatePostCoverImgUrl(state,payload) {
       state.editor.postCoverImgUrl = payload
+    },
+    resetNewsCards(state) {
+      state.loadedNewsCards = []
     }
   },
   actions: {
     async getUserProfile({ commit }, user) {
-      const record = await db.collection('users').doc(firebase.auth().currentUser.uid)
+      const record = await db.collection('profiles').doc(firebase.auth().currentUser.uid)
       const results = await record.get()
       commit('updateProfile', results.data())
-      commit('setProfileInitials')
       const authToken = await user.getIdTokenResult()
       const isAdmin = await authToken.claims.admin
       commit('updateAdmin', isAdmin)
     },
-    async getCards({ state }) {
-      const dataBase = await db.collection("posts").orderBy("date", "desc")
+    async getNewsCards({ state }, limit) {
+      state.postsLoaded = false
+      const dataBase = await db.collection("posts").orderBy("date", "desc").limit(limit)
       const dbResults = await dataBase.get();
       dbResults.forEach((doc) => {
-        if (!state.loadedCards.some((post) => post.postId === doc.id)) {
-          const data = {
-            postId: doc.data().postId,
-            coverImgUrl: doc.data().coverImgUrl,
-            title: doc.data().title,
-            date: doc.data().date,
-            author: doc.data().author
-          };
-          state.loadedCards.push(data);
+        if (!state.loadedNewsCards.some((post) => post.postId === doc.id)) {
+          state.loadedNewsCards.push(doc.data());
         }
       });
+      state.postsLoaded = true
+    },
+    async getCrewCards({state}) {
+      const dataBase = await db.collection("crews").orderBy("year", "desc")
+      const dbResults = await dataBase.get()
+      dbResults.forEach((doc) => {
+        if (!state.loadedCrewCards.some((crew) => crew.crewId === doc.id)) {
+          state.loadedCrewCards.push(doc.data())
+        }
+      })
     }
   },
   modules: {
   },
   getters: {
-    userFullName(state) {
-      if (state.profile === null) {return ''}
-      return state.profile.forename + ' ' + state.profile.surname
+    email(state) {
+      if (state.authUser === null) {return ''}
+      return state.authUser.email
     },
-    userEmail(state) {
-      if (state.profile === null) {return ''}
-      return state.profile.email
+    name(state) {
+      if (state.authUser === null) {return ''}
+      return state.authUser.displayName
+    },
+
+    initials(state) {
+      if (state.authUser === null) {return ''}
+      return state.authUser.displayName.match(/(\b\S)?/g).join("")
+    },
+    loadedNewsCards(state) {
+      return state.loadedNewsCards
     }
   }
 })

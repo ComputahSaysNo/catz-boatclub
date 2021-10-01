@@ -9,19 +9,12 @@
         <form class="login">
             <h2 class="title">Create an account</h2>
             <div class="inputs">
-                <b-field :type="formValid.forename">
-                    <b-input @blur="forenameValid"
+                <b-field :type="formValid.name">
+                    <b-input @blur="nameValid"
                              icon="account"
-                             placeholder="First Name"
+                             placeholder="Full name"
                              required
-                             v-model="formData.forename"></b-input>
-                </b-field>
-                <b-field :type="formValid.surname">
-                    <b-input @blur="surnameValid"
-                             icon="account"
-                             placeholder="Last Name"
-                             required
-                             v-model="formData.surname"></b-input>
+                             v-model="formData.name"></b-input>
                 </b-field>
                 <b-field :message="formValid.emailText" :type="formValid.email">
                     <b-input @blur="emailValid"
@@ -36,7 +29,7 @@
                 <b-field :message="formValid.confirmEmailText" :type="formValid.confirmEmail">
                     <b-input @blur="confirmEmailValid"
                              icon="email"
-                             placeholder="Confirm Email"
+                             placeholder="Confirm email"
                              required
                              v-model="formData.confirmEmail"
                     ></b-input>
@@ -63,12 +56,26 @@
                 </b-field>
             </div>
             <b-button @click.prevent="signUp" class="login" icon-right="arrow-right" type="is-info">Register</b-button>
-            <hr class="rule">
+            <p class="privacy mt-2 is-italic">
+                by clicking 'Register', you confirm that you agree to the <span class="link forgot-password has-text-danger" @click="privacyPopup=true">Privacy Policy</span>
+            </p>
+            <b-modal :width="350" v-model="privacyPopup">
+                <div class="card">
+                    <div class="card-header">
+                        <h1 class="card-header-title">
+                            Privacy Policy
+                        </h1>
+                    </div>
+                    <div class="card-content">
+                        Your email and full name, as well as any information you choose to disclose on your profile page, will be visible by other users of the site.
+                    </div>
+                </div>
+            </b-modal>
+            <hr class="rule mt-5">
             <p class="login-register">
                 Already have an account?
                 <router-link :to="{ name: 'Login' }" class="router-link">Log In</router-link>
             </p>
-
             <div class="angle"></div>
         </form>
         <div class="background">
@@ -80,23 +87,22 @@
 <script>
     import firebase from "firebase/app"
     import "firebase/auth"
-    import db from "../firebase/firebaseInit"
+    import "firebase/functions"
 
     export default {
         name: "Register",
         data() {
             return {
                 formData: {
-                    forename: '',
-                    surname: '',
+                    name: '',
                     email: '',
                     confirmEmail: '',
                     password: '',
                     confirmPassword: '',
+                    privacyAccepted: false
                 },
                 formValid: {
-                    forename: '',
-                    surname: '',
+                    name: '',
                     email: '',
                     emailText: '',
                     confirmEmail: '',
@@ -105,16 +111,13 @@
                     confirmPassword: '',
                     confirmPasswordText: ''
                 },
+                privacyPopup: false,
             }
         },
         methods: {
-            forenameValid() {
-                this.formValid.forename = this.formData.forename.length > 0 ? 'is-success' : 'is-danger'
-                return this.formData.forename.length > 0
-            },
-            surnameValid() {
-                this.formValid.surname = this.formData.surname.length > 0 ? 'is-success' : 'is-danger'
-                return this.formData.surname.length > 0
+            nameValid() {
+                this.formValid.name = this.formData.name.length > 0 ? 'is-success' : 'is-danger'
+                return this.formData.name.length > 0
             },
             async emailValid() {
                 firebase.auth().fetchSignInMethodsForEmail(this.formData.email).then(result => {
@@ -160,29 +163,28 @@
                 }
             },
             async signUp() {
-                this.forenameValid()
-                this.surnameValid()
+                this.nameValid()
                 await this.emailValid()
                 this.confirmEmailValid()
                 this.passwordValid()
                 this.confirmPasswordValid()
-                if (this.forenameValid() && this.surnameValid() && this.formValid.email === 'is-success' && this.confirmEmailValid() && this.passwordValid() && this.confirmPasswordValid()) {
+                if (this.nameValid() && this.formValid.email === 'is-success' && this.confirmEmailValid() && this.passwordValid() && this.confirmPasswordValid()) {
+                    const loading = this.$buefy.loading.open()
+                    let name = this.formData.name.toLowerCase().split(' ').map(x => x[0].toUpperCase() + x.substring(1)).join(' ')
+                    console.log(name)
                     const fbAuth = await firebase.auth()
                     fbAuth.createUserWithEmailAndPassword(this.formData.email, this.formData.password).then(async (result) => {
-                        const users_db = db.collection('users').doc(result.user.uid)
-                        let forename = this.formData.forename.toLowerCase().split(' ').map(x => x[0].toUpperCase() + x.substring(1)).join(' ')
-                        let surname = this.formData.surname.toLowerCase().split(' ').map(x => x[0].toUpperCase() + x.substring(1)).join(' ')
-                        users_db.set({
-                            forename: forename,
-                            surname: surname,
-                            email: this.formData.email,
-                            created: Date.now(),
-                            last_access: Date.now(),
-                            bio: '',
-                            height_cm: 0,
-                            photo: null
-                        }).then(()=> {
-                            this.$router.push({name: 'Home'})
+                        const user = firebase.auth().currentUser
+                        user.updateProfile({displayName: name}).then(async () => {
+                                const createUserRecord = await firebase.app().functions('europe-west1').httpsCallable('createNewUserRecord')
+                                createUserRecord({name: name, uid: result.user.uid, email: this.formData.email}).then(async (profile)=> {
+                                    this.$store.commit('updateAuthUser', result.user)
+                                    this.$store.commit('updateProfile', profile)
+                                    loading.close()
+                                    await this.$router.push({name: 'Home'})
+                                    this.$buefy.toast.open({message: 'Account created! Head to your profile to finish setting it up', type: 'is-info', position: 'is-bottom'})
+                                })
+
                         })
                     })
                 }
@@ -192,5 +194,9 @@
 </script>
 
 <style scoped>
-
+.privacy {
+    font-size: 14px;
+    max-width: 500px;
+    text-align: center;
+}
 </style>

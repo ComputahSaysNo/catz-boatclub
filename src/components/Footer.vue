@@ -7,34 +7,34 @@
                     <h2 class="mb-2">Connect with us:</h2>
                     <ul>
                         <li>
-                            <a href="#">
+                            <a href="https://www.instagram.com/stcatharinesboatclub/">
                                 <b-icon icon="instagram" type="is-danger"></b-icon>
                             </a>
                         </li>
                         <li>
-                            <a href="#">
+                            <a href="https://twitter.com/SCCBC_Cam">
                                 <b-icon icon="twitter" type="is-danger"></b-icon>
                             </a>
                         </li>
                         <li>
-                            <a href="#">
+                            <a href="https://www.facebook.com/sccbc.cam">
                                 <b-icon icon="facebook" type="is-danger"></b-icon>
                             </a>
                         </li>
                         <li>
-                            <a href="#">
+                            <a href="https://en.wikipedia.org/wiki/St_Catharine%27s_College_Boat_Club_(Cambridge)">
                                 <b-icon icon="wikipedia" type="is-danger"></b-icon>
                             </a>
                         </li>
                     </ul>
                 </div>
-                <div class="col-2">
-                    <ul>
-                        <router-link :to="{ name: 'Home' }" class="link">Home</router-link>
-                    </ul>
-                </div>
+<!--                <div class="col-2">-->
+<!--                    <ul>-->
+<!--                        <router-link :to="{ name: 'Home' }" class="link">Home</router-link>-->
+<!--                    </ul>-->
+<!--                </div>-->
             </div>
-            <div class="right">
+            <div class="right is-italic">
                 <p>&copy; 2021, Kevin Mathew</p>
             </div>
         </div>
@@ -43,7 +43,11 @@
 
 <script>
     export default {
-        name: "Footer"
+        name: "Footer",
+        methods: {
+        },
+        mounted() {
+        }
     }
 </script>
 

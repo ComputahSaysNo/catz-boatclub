@@ -1,7 +1,7 @@
 <template>
-    <div class="create-post mt-5 mx-2">
+    <div class="edit-post mt-5 mx-2">
         <div class="container">
-            <h1 class="title">Create News Post</h1>
+            <h1 class="title">Edit Post</h1>
             <div class="mb-3 info">
                 <b-field class="mr-3 post-title">
                     <b-input placeholder="Title" v-model="postTitle"></b-input>
@@ -27,7 +27,7 @@
                             v-model="postHTML"/>
             </div>
             <div class="actions my-4">
-                <b-button @click="uploadPost" icon-right="upload" type="is-info">Create post!</b-button>
+                <b-button @click="uploadPost" type="is-info">Update post</b-button>
             </div>
         </div>
     </div>
@@ -53,22 +53,18 @@
                     }
                 },
                 filteredTags: this.$store.state.loadedCrewCards,
-                taggedCrews: [],
-                imageIds: []
+                taggedCrews: this.$store.state.editor.taggedCrews,
             }
         },
         methods: {
             getFilteredTags(text) {
                 this.filteredTags = this.$store.state.loadedCrewCards.filter((crew)=> {
-                    return crew.name.toLowerCase().includes(text.toLowerCase())
+                    return crew.name.toLowerCase().includes(text)
                 })
             },
             imageHandler(file, Editor, cursorLocation, resetUploader) {
-                const id = Math.random().toString(26).slice(-8)
                 const storageRef = firebase.storage().ref();
-                const path = `photos/${id}.jpg`
-                const fileRef = storageRef.child(path)
-                this.imageIds.push(id)
+                const fileRef = storageRef.child(`photos/${file.name}`)
                 fileRef.put(file).on(
                     "state_changed",
                     (snapshot) => {
@@ -91,31 +87,13 @@
                     for (let crew of this.taggedCrews) {
                         crewIds.push(crew.crewId)
                     }
-                    const timestamp = Date.now()
-                    const record = await db.collection('posts').doc()
-                    await record.set({
-                        postId: record.id,
+                    const record = await db.collection('posts').doc(this.$route.params.postId)
+                    await record.update({
                         html: this.postHTML,
-                        coverImgURL: null,
                         title: this.postTitle,
                         author: this.$store.state.authUser.uid,
-                        date: timestamp,
-                        crews: crewIds,
-                        images: this.imageIds
+                        crews: crewIds
                     })
-                    for (let id of this.imageIds) {
-                        const mediaRecord = await db.collection('media').doc(id)
-                        const fileRef = firebase.storage().ref().child(`photos/${id}.jpg`);
-                        const url = await fileRef.getDownloadURL()
-                        await mediaRecord.set({
-                            path: `photos/${id}.jpg`,
-                            taggedCrews: crewIds,
-                            date: Date.now(),
-                            post: record.id,
-                            uploadedBy: this.$store.state.authUser.uid,
-                            url: url
-                        })
-                    }
                     await this.$store.dispatch("getNewsCards");
                     this.$store.state.editor = {
                         postHTML: '',
@@ -148,13 +126,6 @@
                     this.$store.commit("updatePostHTML", payload);
                 },
             },
-        },
-        mounted() {
-            this.$store.state.editor = {
-                postHTML: '',
-                postTitle: '',
-                taggedCrews: [],
-            }
         }
     }
 </script>
@@ -165,15 +136,9 @@
         height: 100%;
     }
 
-    .info {
-        display: flex;
-        .post-title {
-            width: 300px;
-        }
-
-        .post-tags {
-            min-width: 300px;
-        }
+    .editor-info {
+        width: 500px;
+        max-width: 100%;
     }
 
     .editor {
@@ -194,6 +159,7 @@
             display: flex;
             flex-direction: column;
             height: 100%;
+            overflow: scroll;
             background-color: white;
         }
 

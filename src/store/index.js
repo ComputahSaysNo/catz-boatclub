@@ -22,7 +22,8 @@ export default new Vuex.Store({
     pageLoaded: true,
     postsLoaded: false,
     mobile: false,
-    counter: 0
+    counter: 0,
+    committee: []
   },
   mutations: {
     updateAuthUser(state, payload) {
@@ -75,6 +76,14 @@ export default new Vuex.Store({
           state.loadedCrewCards.push(doc.data())
         }
       })
+    },
+    async getCommittee({state}) {
+      state.committee = []
+      const dataBase = await db.collection("committee").orderBy("ord", "asc")
+      const dbResults = await dataBase.get()
+      dbResults.forEach((doc) => {
+        state.committee.push(doc.data())
+      })
     }
   },
   modules: {
@@ -91,7 +100,7 @@ export default new Vuex.Store({
 
     initials(state) {
       if (state.authUser === null) {return ''}
-      return state.authUser.displayName.match(/(\b\S)?/g).join("")
+      return state.authUser.displayName.split(" ").map((n)=>n[0]).join("");
     },
     loadedNewsCards(state) {
       return state.loadedNewsCards

@@ -1,12 +1,22 @@
 <template>
     <div class="home">
-        <section class="hero is-medium has-bg-img">
+        <section v-if="$store.state.mobile" class="hero is-large has-bg-img2">
             <div class="hero-body">
-                <div class="container">
+                <div class="container is-fullwidth">
                     <div class="title-bg p-4">
-                        <h1 class="title is-1 has-text-light">
-                            St. Catharine's College Boat Club
-                        </h1>
+                        <h1 v-if="$store.state.mobile" class="title is-2 has-text-light">St. Catharine's College Boat Club</h1>
+                        <h1 v-else class="title is-1 has-text-light">St. Catharine's College Boat Club</h1>
+                        <h2 class="subtitle has-text-warning is-uppercase">founded 1883</h2>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section v-else class="hero is-large has-bg-img">
+            <div class="hero-body">
+                <div class="container is-fullwidth">
+                    <div class="title-bg p-4">
+                        <h1 v-if="$store.state.mobile" class="title is-2 has-text-light">St. Catharine's College Boat Club</h1>
+                        <h1 v-else class="title is-1 has-text-light">St. Catharine's College Boat Club</h1>
                         <h2 class="subtitle has-text-warning is-uppercase">founded 1883</h2>
                     </div>
                 </div>
@@ -76,6 +86,10 @@
         background: url('../assets/hero.jpg') center center;
         background-size: cover;
     }
+    .has-bg-img2 {
+        background: url('../assets/hero1.jpg') center center;
+        background-size: cover;
+    }
 
     .title-bg {
         background-color: rgba(30, 30, 30, 0.9);
@@ -84,9 +98,8 @@
     }
 
     .welcome {
-        font-size: 18px;
         text-align: center;
-        width: 700px;
+        font-size: 16px;
         max-width: 100%;
         margin: 0 auto;
     }

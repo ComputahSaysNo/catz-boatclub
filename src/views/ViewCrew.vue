@@ -47,8 +47,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="tile is-parent is-3 has-text-centered is-justify-content-center">
-                    <div class="tile is-child card p-3" v-if="bumps.length !== 0">
+                <div class="tile is-parent is-3 has-text-centered is-justify-content-center" style="width: max-content">
+                    <div class="tile is-child card p-3" v-if="bumps.length !== 0 || editing">
                         <h3 class="title is-5 mt-1 mb-3 mr-5">Bumps Results:</h3>
                         <b-field v-if="editing" grouped class="mt-5 ml-1">
                             <b-field v-for="n in 4" :key="n" :label="`Day ${n}`" label-position="on-border">
@@ -77,8 +77,9 @@
         <div class="mx-auto" v-if="crew">
             <section class="content-card-wrap-special section has-background-warning-light px-6 my-5">
                 <div class="content-cards">
-                    <UserCard :key="index" :profile="profile"
-                              v-for="(profile, index) in this.user_profiles"></UserCard>
+                    <UserCard :key="index" :uid="uid" :position="['Bow', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Stroke'][index]"
+                              v-for="(uid, index) in this.crew.crew"></UserCard>
+                    <UserCard :key="index" :uid="this.crew.cox" :position="'Cox'"></UserCard>
                 </div>
             </section>
 
@@ -191,7 +192,7 @@
             bumps() {
                 let out = []
                 for (let result of this.crew.bumps_results) {
-                    if (result !== null) {
+                    if (result !== null && !isNaN(result)) {
                         out.push(parseInt(result))
                     }
                 }
@@ -219,7 +220,7 @@
             @media (min-width: 1000px) {
                 grid-template-columns: repeat(4, 1fr);
             }
-            @media (min-width: 1500px) {
+            @media (min-width: 1750px) {
                 grid-template-columns: repeat(9, 1fr);
             }
         }

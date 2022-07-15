@@ -97,32 +97,58 @@ import CrewCard from "../components/CrewCard";
         font-size: 30px;
     }
 
-    .post-content ::v-deep p {
-        margin-bottom: 0.5em;
-        font-size: 18px;
-        line-height: 30px;
-    }
-
-    .post-content ::v-deep td {
-        padding: 0.5em;
-    }
-
-    .post-content ::v-deep img {
-        display: block;
-        margin: 0 auto;
-    }
-
-    .post-content ::v-deep h1 {
-        font-size: 25px;
-    }
-
-    .post-content ::v-deep h2 {
-        font-size: 20px;
-    }
-
 
     .post-content {
         margin: 0 auto;
+        ::v-deep p {
+            margin-bottom: 0.5em;
+            font-size: 18px;
+            line-height: 30px;
+        }
+        ::v-deep h2 {
+            font-size: 20px;
+        }
+        ::v-deep h1 {
+            font-size: 25px;
+        }
+        ::v-deep img {
+            display: block;
+            margin: 0 auto;
+        }
+        ::v-deep td {
+            padding: 0.5em;
+        }
+        ::v-deep iframe {
+            height: 500px;
+            width: 100%;
+            max-width: 800px;
+            max-height: 60vw;
+            display: block;
+            margin: 0 auto;
+        }
+        ::v-deep .ql-align-center {
+            text-align: center;
+        }
+        ::v-deep blockquote {
+            border-left: 2px solid gray;
+            padding-left: 10px;
+            font-weight: lighter;
+            font-size: 17px;
+        }
+        ::v-deep a {
+            color: #219fff;
+            text-decoration: none;
+            transition: 0.3s;
+            border-bottom: 1px solid transparent;
+
+            &:hover {
+                border-color: black;
+            }
+        }
+
+        ::v-deep ul {
+            list-style-type: circle;
+        }
     }
 
     .post-container {

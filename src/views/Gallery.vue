@@ -41,7 +41,7 @@
             </div>
         </div>
         <b-modal v-if="selectedImage" v-model="modalOpen">
-            <div class="card">
+            <div class="card m-3">
                 <div class="card-image">
                     <b-image :src="selectedImage.url" class="selectedImage"></b-image>
                 </div>
@@ -52,7 +52,7 @@
                               type="is-info" v-if="selectedImageData.linkedPost">
                         View post: "{{selectedImageData.linkedPost}}"
                     </b-button>
-                    <p class="subtitle is-6 my-4 is-italic ml-auto">
+                    <p v-if="!$store.state.mobile" class="subtitle is-6 my-4 is-italic ml-auto">
                         {{new Date(selectedImage.date).toLocaleString("en-gb", { dateStyle: "long" })}} by
                         {{selectedImageData.uploaderName}}
                     </p>

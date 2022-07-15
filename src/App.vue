@@ -89,6 +89,22 @@
     }
   }
 
+  section {
+    a {
+      color: #219fff;
+      text-decoration: none;
+      transition: 0.3s;
+      border-bottom: 1px solid transparent;
+
+      &:hover {
+        border-color: black;
+        color: #219fff;
+      }
+    }
+  }
+
+
+
 </style>
 <script>
   import Navigation from "./components/Navigation";

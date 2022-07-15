@@ -3,7 +3,7 @@
         <header>
             <nav class="container">
                 <router-link :to="{name: 'Home'}" class="branding link">
-                    <WheelIcon class="icon"/>
+                    <WheelIcon id="wheel" class="icon"/>
                     <h1 class="header">SCCBC</h1>
                 </router-link>
                 <div class="nav-links">
@@ -14,11 +14,14 @@
                                 <router-link to="/info/main" class="link-dropdown">Info</router-link>
                                 <b-icon icon="menu-down"></b-icon>
                             </template>
-                            <router-link to="/info/applicants"><b-dropdown-item aria-role="listitem">Potential Applicants</b-dropdown-item></router-link>
+                            <router-link to="/info/novices"><b-dropdown-item aria-role="listitem">Novices</b-dropdown-item></router-link>
+                            <router-link to="/info/seniors"><b-dropdown-item aria-role="listitem">Seniors</b-dropdown-item></router-link>
                             <router-link to="/info/alumni"><b-dropdown-item aria-role="listitem">Alumni</b-dropdown-item></router-link>
                             <router-link to="/info/committee"><b-dropdown-item aria-role="listitem">Committee</b-dropdown-item></router-link>
                             <router-link to="/info/covid"><b-dropdown-item aria-role="listitem">COVID-19 Policy</b-dropdown-item></router-link>
                             <router-link to="/info/history"><b-dropdown-item aria-role="listitem">Club History</b-dropdown-item></router-link>
+                            <router-link to="/info/privacy"><b-dropdown-item aria-role="listitem">Privacy Policy</b-dropdown-item></router-link>
+
 
                         </b-dropdown>
                         <router-link class="link" :to="{name: 'Crews'}">Crews</router-link>
@@ -65,7 +68,7 @@
         </header>
         <b-sidebar fullheight v-model="mobileNavOpen" v-if="$store.state.mobile">
             <b-menu>
-                <h1>SCCBC</h1>
+                <h1 class="title is-3 m-5">SCCBC</h1>
                 <b-menu-list>
                     <b-menu-item icon="home" label="Home" tag="router-link" to="/"></b-menu-item>
                     <b-menu-item icon="newspaper-variant-multiple-outline" label="News" tag="router-link" to="/news"></b-menu-item>
@@ -76,11 +79,13 @@
                             </b-icon>
                         </template>
 
-                        <b-menu-item icon="information-outline" label="Potential Applicants" tag="router-link" to="/info/applicants"></b-menu-item>
+                        <b-menu-item icon="information-outline" label="Novices" tag="router-link" to="/info/novices"></b-menu-item>
+                        <b-menu-item icon="information-outline" label="Seniors" tag="router-link" to="/info/seniors"></b-menu-item>
                         <b-menu-item icon="information-outline" label="Club History" tag="router-link" to="/info/history"></b-menu-item>
                         <b-menu-item icon="information-outline" label="Alumni" tag="router-link" to="/info/alumni"></b-menu-item>
                         <b-menu-item icon="information-outline" label="Committee" tag="router-link" to="/info/committee"></b-menu-item>
                         <b-menu-item icon="information-outline" label="COVID-19 Policy " tag="router-link" to="/info/covid"></b-menu-item>
+                        <b-menu-item icon="information-outline" label="Privacy Policy " tag="router-link" to="/info/privacy"></b-menu-item>
                     </b-menu-item>
                     <b-menu-item icon="account-group" label="Crews" tag="router-link" to="/crews"></b-menu-item>
                     <b-menu-item icon="waves" label="Outings" tag="router-link" to="/outings"></b-menu-item>
@@ -125,6 +130,29 @@
                 this.profileMenuOpen = false
                 this.mobileNavOpen = false
             }
+        },
+        mounted() {
+            let e = document.getElementById('wheel');
+            let spin = false;
+            let ang = 0
+            let myInt
+
+            let setAngle = function() {
+                e.style.transform = `rotate(${ang}deg)`
+                if (spin) {
+                    ang = (ang + 4) % 360
+                }
+            }
+
+            e.onmouseover = function(){
+                spin = true;
+                myInt = setInterval(setAngle, 20)
+            };
+
+            e.onmouseout = function(){
+                spin = false;
+                clearInterval(myInt)
+            };
         }
     }
 </script>
@@ -160,12 +188,7 @@
             }
 
             .icon {
-                transition: transform 2s ease-in-out;
 
-                &:hover {
-                    transform: rotate(3600deg);
-                    transition: transform 20s;
-                }
             }
 
             .header {

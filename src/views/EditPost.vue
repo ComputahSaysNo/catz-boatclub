@@ -2,8 +2,8 @@
     <div class="edit-post mt-5 mx-2">
         <div class="container">
             <h1 class="title">Edit Post</h1>
-            <div class="mb-3 info">
-                <b-field class="mr-3 post-title">
+            <div class="mb-3 info is-block-mobile is-flex-desktop">
+                <b-field style="width: 100%; max-width: 400px" class="mr-3 post-title">
                     <b-input placeholder="Title" v-model="postTitle"></b-input>
                 </b-field>
                 <b-field class="post-tags">

@@ -35,7 +35,10 @@
 <!--                </div>-->
             </div>
             <div class="right is-italic">
-                <p>&copy; 2021, Kevin Mathew</p>
+                <p style="text-align: center;font-size: 14px">
+                    Website &copy; Kevin Mathew, 2021 <br>
+                    <span v-if="$route.name ==='Home'">Cover photo &copy; James Lee, 2021</span>
+                </p>
             </div>
         </div>
     </footer>
@@ -66,10 +69,11 @@
                 gap: 0px;
             }
 
-            > div {
+            div {
                 display: flex;
                 flex: 1;
             }
+
 
             .left {
                 gap: 32px;

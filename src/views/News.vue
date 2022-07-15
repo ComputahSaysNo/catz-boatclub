@@ -2,7 +2,7 @@
     <div class="news mt-5 mx-2">
         <div class="container">
             <div class="is-block-mobile is-flex-desktop">
-                <h1 class="title is-2 mb-1" ref="title">All News</h1>
+                <h1 class="title is-2 mb-4" ref="title">All News</h1>
                 <div class="right ml-auto is-flex">
                     <b-button icon-right="pencil" class="new-post" type="is-info" v-if="$store.state.isAdmin" @click="$router.push({name: 'CreatePost'})">New Post</b-button>
                     <b-input icon-right="magnify" class="search" placeholder="search..." v-model="searchQuery" @input="search"></b-input>

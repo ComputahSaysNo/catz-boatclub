@@ -57,7 +57,7 @@
             </div>
             <b-button @click.prevent="signUp" class="login" icon-right="arrow-right" type="is-info">Register</b-button>
             <p class="privacy mt-2 is-italic">
-                by clicking 'Register', you confirm that you agree to the <span class="link forgot-password has-text-danger" @click="privacyPopup=true">Privacy Policy</span>
+                by clicking 'Register', you confirm that you agree to the <a class="link forgot-password has-text-danger" href="/info/privacy">Privacy Policy</a>
             </p>
             <b-modal :width="350" v-model="privacyPopup">
                 <div class="card">

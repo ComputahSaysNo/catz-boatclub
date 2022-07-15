@@ -17,6 +17,7 @@ import Gallery from "../views/Gallery";
 import Outings from "../views/Outings";
 import Ergs from "../views/Ergs";
 import Admin from "../views/Admin";
+import Committee from "../views/Committee";
 
 Vue.use(VueRouter)
 
@@ -73,6 +74,14 @@ const routes = [
   {
     path: '/info',
     redirect: '/info/main'
+  },
+  {
+    path: '/info/committee',
+    name: 'Committee',
+    component: Committee,
+    meta: {
+      title: "Committee"
+    }
   },
   {
     path: '/info/:infoId',

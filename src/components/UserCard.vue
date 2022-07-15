@@ -1,15 +1,16 @@
 <template>
     <div class="has-text-centered">
-        <b-tag size="is-medium" type="is-warning" class="position mb-2"><b>{{profile.position}}</b></b-tag>
+        <b-tag size="is-medium" type="is-warning" class="position mb-2"><b>{{position}}</b></b-tag>
         <div class="card" @click="goToProfile">
-<!--            <div class="card-image" v-show="profile.photoURL">-->
-<!--                <figure class="image is-1by1">-->
-<!--                    <img v-if="profile.photoURL" :src="profile.photoURL"/>-->
-<!--                </figure>-->
-<!--            </div>-->
+            <!--            <div class="card-image" v-show="profile.photoURL">-->
+            <!--                <figure class="image is-1by1">-->
+            <!--                    <img v-if="profile.photoURL" :src="profile.photoURL"/>-->
+            <!--                </figure>-->
+            <!--            </div>-->
             <div class="card-content">
                 <div class="initials mx-auto my-3"><h3>{{initials}}</h3></div>
                 <h2 class="card-title">{{profile.name}}</h2>
+                <h3 v-if=this.email class="is-family-sans-serif has-text-danger">{{profile.email}}</h3>
             </div>
         </div>
 
@@ -18,18 +19,35 @@
 </template>
 
 <script>
+    import db from "../firebase/firebaseInit";
+
     export default {
         name: "UserCard",
-        props: ["profile"],
+        props: ["position", "uid", "email"],
+        data() {
+            return {
+              profile: {
+                  name: '...',
+              }
+            }
+        },
         methods: {
             goToProfile() {
-                this.$router.push({name: 'Profile', params: {uid: this.profile.uid}})
+                this.$router.push({name: 'Profile', params: {uid: this.uid}})
+            },
+            async getProfile() {
+                const record = await db.collection('profiles').doc(this.uid)
+                const results = await record.get()
+                this.profile = results.data()
             }
         },
         computed: {
             initials() {
-                return this.profile.name.match(/(\b\S)?/g).join("");
+                return this.profile.name.split(" ").map((n)=>n[0]).join("");
             },
+        },
+        mounted() {
+            this.getProfile()
         }
     }
 </script>

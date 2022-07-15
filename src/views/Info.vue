@@ -1,16 +1,17 @@
 <template>
     <div class="info my-5 mx-1">
             <div class="post-container" v-if="currentPage">
-                <div class="above is-flex">
-                    <div class="left">
-                        <b-input style="width: 400px" size="is-medium" placeholder="Page title" v-if="editing" v-model="currentPage.title"></b-input>
-                        <h1 v-else class="title is-3 mb-1">{{currentPage.title}}</h1>
+                <div class="is-flex">
+                    <div class="ml-2">
+                        <b-field style="max-width: 70%" v-if="editing && $store.state.isAdmin" grouped>
+                            <b-input expanded style="width: 400px;" class="mb-3" size="is-medium" placeholder="Page title" v-model="currentPage.title"></b-input>
+                            <b-button v-show="editing" class="mb-4 mt-auto" icon-right="check" type="is-success" @click="updatePage"></b-button>
+                        </b-field>
+                        <div v-else class="is-flex">
+                            <h1 class="title is-3 mb-1">{{currentPage.title}}</h1>
+                            <b-button v-if="$store.state.isAdmin" v-show = "!editing" class="mt-auto ml-4" icon-right="pencil" type="is-info" @click="editing=true"></b-button>
+                        </div>
 
-                    </div>
-                    <div class="right is-flex ml-auto" v-if="$store.state.isAdmin">
-                        <b-button v-show = "!editing" class="mt-auto mr-2" icon-right="pencil" type="is-info" @click="editing=true">Edit</b-button>
-                        <b-button v-show="editing" class="mt-auto mr-2" icon-right="check" type="is-success" @click="updatePage">Done</b-button>
-<!--                        <b-button class="mt-auto" icon-right="trash-can-outline" type="is-danger" @click="deletePage">Delete</b-button>-->
                     </div>
                 </div>
 
@@ -96,60 +97,65 @@
         font-size: 40px;
     }
 
-    .post-content ::v-deep p {
-        margin-bottom: 1em;
-    }
-
-    .post-content ::v-deep a {
-        color: #219fff;
-        text-decoration: none;
-        transition: 0.3s;
-        border-bottom: 1px solid transparent;
-        &:hover {
-            border-color: black;
-        }
-    }
-
-    .post-content ::v-deep td {
-        padding: 0.5em;
-    }
-
-    .post-content ::v-deep ul {
-        list-style: inside;
-    }
-
-    .post-content ::v-deep li {
-        font-size: 18px;
-        margin-bottom: 1em;
-        margin-left: 50px;
-    }
-
-    .post-content ::v-deep img {
-        display: block;
-        margin: 0 auto;
-    }
-
-    .post-content ::v-deep h1 {
-        font-size: 25px;
-    }
-
-    .post-content ::v-deep h2 {
-        font-size: 20px;
-    }
-
-
     .post-content {
-        margin-left: auto;
-        margin-right: auto;
+        margin: 0 auto;
+        ::v-deep p {
+            margin-bottom: 0.5em;
+            font-size: 18px;
+            line-height: 30px;
+        }
+        ::v-deep h2 {
+            font-size: 20px;
+        }
+        ::v-deep h1 {
+            font-size: 25px;
+        }
+        ::v-deep img {
+            display: block;
+            margin: 0 auto;
+        }
+        ::v-deep td {
+            padding: 0.5em;
+        }
+        ::v-deep iframe {
+            height: 600px;
+            width: 80%;
+            display: block;
+            margin: 0 auto;
+        }
+        ::v-deep .ql-align-center {
+            text-align: center;
+        }
+        ::v-deep blockquote {
+            border-left: 2px solid gray;
+            padding-left: 10px;
+            font-weight: lighter;
+            font-size: 17px;
+        }
+        ::v-deep a {
+            color: #219fff;
+            text-decoration: none;
+            transition: 0.3s;
+            border-bottom: 1px solid transparent;
+
+            &:hover {
+                border-color: black;
+            }
+        }
+        ::v-deep ul {
+            font-size: 18px;
+            line-height: 2em;
+            list-style-type: square;
+            list-style-position: outside;
+            margin-left: 30px;
+        }
     }
 
     .post-container {
         margin-left: auto;
         margin-right: auto;
-        max-width: 1100px;
-        p {
-            margin-bottom: 1em;
-        }
+        width: 1100px;
+        max-width: 100%;
     }
 
     .rule {
@@ -161,7 +167,8 @@
     .editor {
         margin-left: auto;
         margin-right: auto;
-        max-width: 1100px;
+        width: 1100px;
+        max-width: 100%;
         p {
             margin-bottom: 1em;
         }

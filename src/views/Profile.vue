@@ -217,7 +217,7 @@
         },
         computed: {
             initials() {
-                return this.profile.name.match(/(\b\S)?/g).join("")
+                return this.profile.name.split(" ").map((n)=>n[0]).join("");
             },
             dob: {
                 get() {

@@ -2,15 +2,7 @@ import firebase from 'firebase/app';
 import 'firebase/firestore';
 import 'firebase/analytics';
 
-const config = {
-    apiKey: "AIzaSyB4NYzkwwfVv57gXJKqJVZSJjp6QjHUX8U",
-    authDomain: "catz-boatclub.firebaseapp.com",
-    projectId: "catz-boatclub",
-    storageBucket: "catz-boatclub.appspot.com",
-    messagingSenderId: "820895297874",
-    appId: "1:820895297874:web:f19081fa5d0d31d9f10a8b",
-    measurementId: "G-L1YLLPHYPP"
-};
+// PUT CONFIG OBJECT HERE
 
 const firebaseApp = firebase.initializeApp(config);
 firebase.analytics();
